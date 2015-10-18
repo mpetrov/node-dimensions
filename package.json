@@ -1,0 +1,26 @@
+{
+  "name": "node-dimensions",
+  "version": "0.0.1",
+  "description": "Lego Dimensions Toy Pad library for NodeJS",
+  "main": "dimensions.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpetrov/node-dimensions.git"
+  },
+  "keywords": [
+    "lego",
+    "dimensions"
+  ],
+  "author": "Martin Petrov <martin@martinpetrov.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mpetrov/node-dimensions/issues"
+  },
+  "homepage": "https://github.com/mpetrov/node-dimensions#readme",
+  "dependencies": {
+    "node-hid": "^0.5.1"
+  }
+}
