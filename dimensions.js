@@ -97,7 +97,7 @@ dimensions.Device.prototype.connect = function() {
     this.emit('error', error);
   }.bind(this));
 
-  this.hidDevice_.write([
+  this.hidDevice_.write([0x00,
       0x55, 0x0f, 0xb0, 0x01,
       0x28, 0x63, 0x29, 0x20,
       0x4c, 0x45, 0x47, 0x4f,
@@ -125,7 +125,7 @@ dimensions.Device.prototype.pad = function(data) {
 }
 
 dimensions.Device.prototype.write = function(data) {
-  this.hidDevice_.write(this.pad(this.checksum(data)));
+  this.hidDevice_.write([0x00].concat(this.pad(this.checksum(data))));
 }
 
 dimensions.Device.prototype.updatePanel = function(panel, color, opt_speed) {
