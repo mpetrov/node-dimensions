@@ -97,7 +97,7 @@ dimensions.Device.prototype.connect = function() {
     this.emit('error', error);
   }.bind(this));
 
-  this.hidDevice_.write([
+  this.hidDevice_.write([0x00,
       0x55, 0x0f, 0xb0, 0x01,
       0x28, 0x63, 0x29, 0x20,
       0x4c, 0x45, 0x47, 0x4f,
@@ -107,6 +107,26 @@ dimensions.Device.prototype.connect = function() {
       0x00, 0x00, 0x00, 0x00,
       0x00, 0x00, 0x00, 0x00]);
 };
+
+dimensions.Device.prototype.checksum = function(data) {
+  var checksum = 0;
+  for (var i = 0; i < data.length; i++) {
+    checksum += data[i];
+  }
+  data.push(checksum & 0xFF);
+  return data;
+}
+
+dimensions.Device.prototype.pad = function(data) {
+  while(data.length < 32) {
+    data.push(0x00);
+  }
+  return data;
+}
+
+dimensions.Device.prototype.write = function(data) {
+  this.hidDevice_.write([0x00].concat(this.pad(this.checksum(data))));
+}
 
 dimensions.Device.prototype.updatePanel = function(panel, color, opt_speed) {
   if (typeof opt_speed !== 'number') {
@@ -120,22 +140,9 @@ dimensions.Device.prototype.updatePanel = function(panel, color, opt_speed) {
     (color >> 8) & 0xFF,
     color & 0xFF
   ];
-  var checksum = 0;
-  for (var i = 0; i < data.length; i++) {
-    checksum += data[i];
-  }
-  var checksumValue = (checksum - 0xe1) & 0xFF;
 
   this.colourUpdateNumber_++;
-  this.hidDevice_.write([0x55, 0x08, 0xc2]
-      .concat(data)
-      .concat([checksumValue])
-      .concat([
-          0x00, 0x00, 0x00, 0x00,
-          0x00, 0x00, 0x00, 0x00,
-          0x00, 0x00, 0x00, 0x00,
-          0x00, 0x00, 0x00, 0x00,
-          0x00, 0x00, 0x00, 0x00, 0x00]));
+  this.write([0x55, 0x08, 0xc2].concat(data));
 };
 
 module.exports = dimensions;
